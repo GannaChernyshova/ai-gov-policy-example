@@ -1,0 +1,62 @@
+[
+  {
+    "name": "No Httpbin",
+    "decision": "deny",
+    "actions": [
+      "connect:tcp"
+    ],
+    "resources": [
+      "httpbin.org"
+    ]
+  },
+  {
+    "name": "No Claude MCP",
+    "decision": "deny",
+    "actions": [
+      "connect:tcp"
+    ],
+    "resources": [
+      "mcp-proxy.anthropic.com:443"
+    ]
+  },
+  {
+    "name": "GH catalog-service Read-only (GraphQL endpoint)",
+    "decision": "deny",
+    "actions": [
+      "request:post",
+      "request:put",
+      "request:delete",
+      "request:patch"
+    ],
+    "http_resources": [
+      {
+        "host": "api.github.com",
+        "path": "/graphql"
+      },
+      {
+        "host": "api.github.com",
+        "path": "/repos/*/catalog-service-node/*"
+      },
+      {
+        "host": "api.github.com",
+        "path": "/repos/*/catalog-service-node"
+      }
+    ]
+  },
+  {
+    "name": "GH catalog-service Read-only (REST endpoint)",
+    "decision": "deny",
+    "actions": [
+      "request:post",
+      "request:put",
+      "request:delete",
+      "request:patch"
+    ],
+    "http_resources": [
+      {
+        "host": "github.com",
+        "path": "/*/catalog-service-node.git/git-receive-pack"
+      }
+    ]
+  }
+]

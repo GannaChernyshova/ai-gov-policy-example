@@ -1,0 +1,8 @@
+{
+  "name": "aig-demo-team Network Restrictions",
+  "scope": {
+    "teams": [
+      "AIG_DEMO_TEAM_ID"
+    ]
+  }
+}

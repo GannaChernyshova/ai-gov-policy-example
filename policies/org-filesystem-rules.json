@@ -1,0 +1,46 @@
+[
+  {
+    "name": "Deny Home Directory (All Platforms)",
+    "decision": "deny",
+    "actions": [
+      "read",
+      "write"
+    ],
+    "resources": [
+      "~"
+    ]
+  },
+  {
+    "name": "Allow Home Recursive (All Platforms)",
+    "decision": "allow",
+    "actions": [
+      "read",
+      "write"
+    ],
+    "resources": [
+      "~/**"
+    ]
+  },
+  {
+    "name": "Deny Home Directory Windows",
+    "decision": "deny",
+    "actions": [
+      "read",
+      "write"
+    ],
+    "resources": [
+      "C:\\Users\\*"
+    ]
+  },
+  {
+    "name": "Allow Below Home Directory Windows",
+    "decision": "allow",
+    "actions": [
+      "read",
+      "write"
+    ],
+    "resources": [
+      "C:\\Users\\*\\**"
+    ]
+  }
+]

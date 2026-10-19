@@ -1,0 +1,31 @@
+# syntax=docker/sandbox-kit:3
+schemaVersion: "3"
+kind: mixin
+displayName: AI Governance policies
+build: |
+  FROM scratch
+  COPY README.md /opt/aig-policies/
+  COPY policies/ /opt/aig-policies/policies/
+args:
+  org:
+    default: annachernyshovademo
+    pattern: '[a-z0-9][a-z0-9_-]*'
+    env: AIG_ORG
+  team:
+    default: aig-demo-team
+    pattern: '[a-zA-Z0-9][a-zA-Z0-9_.-]*'
+    env: AIG_TEAM
+  docker_username:
+    required: true
+    pattern: '[a-z0-9][a-z0-9_-]*'
+    env: AIG_DOCKER_USERNAME
+capabilities:
+  - type: com.docker.sandbox/network-policy@1
+    config:
+      runtime:
+        allow:
+          - hub.docker.com:443
+          - docs.docker.com:443
+  - type: com.docker.sandbox/agent-context@1
+    config:
+      contentFile: ./AGENTS.md

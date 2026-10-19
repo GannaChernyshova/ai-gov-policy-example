@@ -1,0 +1,593 @@
+[
+  {
+    "name": "api.anthropic.com",
+    "decision": "allow",
+    "actions": [
+      "connect:tcp"
+    ],
+    "resources": [
+      "api.anthropic.com:443"
+    ]
+  },
+  {
+    "name": "api.openai.com",
+    "decision": "allow",
+    "actions": [
+      "connect:tcp"
+    ],
+    "resources": [
+      "**.openai.com:443",
+      "chatgpt.com:443",
+      "**.chatgpt.com:443",
+      "**.oaistatic.com:443",
+      "**.oaiusercontent.com:443",
+      "cdn.openaimerge.com:443"
+    ]
+  },
+  {
+    "name": "api.githubcopilot.com",
+    "decision": "allow",
+    "actions": [
+      "connect:tcp"
+    ],
+    "resources": [
+      "**.githubcopilot.com:443"
+    ]
+  },
+  {
+    "name": "CLAUDE PLATFORM",
+    "decision": "allow",
+    "actions": [
+      "connect:tcp"
+    ],
+    "resources": [
+      "platform.claude.com:443",
+      "statsig.anthropic.com:443",
+      "mcp-proxy.anthropic.com:443",
+      "downloads.claude.ai:443",
+      "claude.com:443"
+    ]
+  },
+  {
+    "name": "GOOGLE AI (Gemini)",
+    "decision": "allow",
+    "actions": [
+      "connect:tcp"
+    ],
+    "resources": [
+      "generativelanguage.googleapis.com:443",
+      "aiplatform.googleapis.com:443",
+      "gemini.google.com:443",
+      "play.googleapis.com:443"
+    ]
+  },
+  {
+    "name": "CURSOR",
+    "decision": "allow",
+    "actions": [
+      "connect:tcp"
+    ],
+    "resources": [
+      "cursor.com:443",
+      "**.cursor.sh:443"
+    ]
+  },
+  {
+    "name": "OTHER AI PROVIDERS",
+    "decision": "allow",
+    "actions": [
+      "connect:tcp"
+    ],
+    "resources": [
+      "api.perplexity.ai:443",
+      "models.dev:443",
+      "factory.ai:443",
+      "**.factory.ai:443",
+      "api.workos.com:443"
+    ]
+  },
+  {
+    "name": "NPM / NODE.JS",
+    "decision": "allow",
+    "actions": [
+      "connect:tcp"
+    ],
+    "resources": [
+      "registry.npmjs.org:443",
+      "npmjs.com:443",
+      "npmjs.org:443",
+      "npm.duckdb.org:443",
+      "yarnpkg.com:443",
+      "**.yarnpkg.com:443",
+      "nodejs.org:443",
+      "nodesource.com:443",
+      "bun.sh:443",
+      "**.bun.sh:443"
+    ]
+  },
+  {
+    "name": "PYPI / PYTHON",
+    "decision": "allow",
+    "actions": [
+      "connect:tcp"
+    ],
+    "resources": [
+      "pypi.org:443",
+      "pypi.python.org:443",
+      "files.pythonhosted.org:443",
+      "pythonhosted.org:443",
+      "pypa.io:443",
+      "bootstrap.pypa.io:443",
+      "astral.sh:443"
+    ]
+  },
+  {
+    "name": "NUGET",
+    "decision": "allow",
+    "actions": [
+      "connect:tcp"
+    ],
+    "resources": [
+      "api.nuget.org:443",
+      "globalcdn.nuget.org:443",
+      "www.nuget.org:443",
+      "nuget.org:443",
+      "dot.net:443",
+      "dotnet.microsoft.com:443"
+    ]
+  },
+  {
+    "name": "MAVEN / JAVA",
+    "decision": "allow",
+    "actions": [
+      "connect:tcp"
+    ],
+    "resources": [
+      "maven.org:443",
+      "repo.maven.apache.org:443",
+      "repo1.maven.org:443",
+      "search.maven.org:443",
+      "gradle.org:443",
+      "**.gradle.org:443",
+      "spring.io:443",
+      "java.com:443",
+      "java.net:443",
+      "apache.org:443",
+      "eclipse.org:443"
+    ]
+  },
+  {
+    "name": "GO MODULES",
+    "decision": "allow",
+    "actions": [
+      "connect:tcp"
+    ],
+    "resources": [
+      "golang.org:443",
+      "goproxy.io:443",
+      "proxy.golang.org:443",
+      "sum.golang.org:443",
+      "pkg.go.dev:443",
+      "storage.googleapis.com:443"
+    ]
+  },
+  {
+    "name": "RUBY GEMS",
+    "decision": "allow",
+    "actions": [
+      "connect:tcp"
+    ],
+    "resources": [
+      "rubygems.org:443",
+      "api.rubygems.org:443",
+      "index.rubygems.org:443",
+      "gems.rubygems.org:443",
+      "ruby-lang.org:443",
+      "rubyonrails.org:443",
+      "rvm.io:443"
+    ]
+  },
+  {
+    "name": "RUST / CARGO",
+    "decision": "allow",
+    "actions": [
+      "connect:tcp"
+    ],
+    "resources": [
+      "crates.io:443",
+      "index.crates.io:443",
+      "static.crates.io:443",
+      "rustup.rs:443",
+      "sh.rustup.rs:443",
+      "static.rust-lang.org:443"
+    ]
+  },
+  {
+    "name": "PHP / PACKAGIST",
+    "decision": "allow",
+    "actions": [
+      "connect:tcp"
+    ],
+    "resources": [
+      "packagist.org:443",
+      "**.packagist.org:443",
+      "packagist.com:443"
+    ]
+  },
+  {
+    "name": "OTHER LANGUAGE ECOSYSTEMS",
+    "decision": "allow",
+    "actions": [
+      "connect:tcp"
+    ],
+    "resources": [
+      "pub.dev:443",
+      "hex.pm:443",
+      "cpan.org:443",
+      "metacpan.org:443",
+      "haskell.org:443",
+      "swift.org:443",
+      "cocoapods.org:443",
+      "ziglang.org:443"
+    ]
+  },
+  {
+    "name": "SIGSTORE",
+    "decision": "allow",
+    "actions": [
+      "connect:tcp"
+    ],
+    "resources": [
+      "tuf-repo-cdn.sigstore.dev:443"
+    ]
+  },
+  {
+    "name": "AWS / AZURE / GCP CLOUD",
+    "decision": "allow",
+    "actions": [
+      "connect:tcp"
+    ],
+    "resources": [
+      "**.amazonaws.com:443",
+      "**.googleapis.com:443",
+      "azure.com:443",
+      "dev.azure.com:443",
+      "login.microsoftonline.com:443",
+      "**.blob.core.windows.net:443",
+      "visualstudio.com:443",
+      "**.visualstudio.com:443",
+      "packages.microsoft.com:443"
+    ]
+  },
+  {
+    "name": "HASHICORP / VERCEL / CLOUDFLARE",
+    "decision": "allow",
+    "actions": [
+      "connect:tcp"
+    ],
+    "resources": [
+      "hashicorp.com:443",
+      "**.hashicorp.com:443",
+      "vercel.com:443",
+      "**.public.blob.vercel-storage.com:443",
+      "challenges.cloudflare.com:443",
+      "fastly.com:443"
+    ]
+  },
+  {
+    "name": "CDN / BUILD TOOLS",
+    "decision": "allow",
+    "actions": [
+      "connect:tcp"
+    ],
+    "resources": [
+      "unpkg.com:443",
+      "jsdelivr.net:443",
+      "**.gvt1.com:443",
+      "dl.google.com:443",
+      "binaries.prisma.sh:443",
+      "playwright.azureedge.net:443",
+      "mise.run:443",
+      "mise-versions.jdx.dev:443",
+      "json-schema.org:443",
+      "json.schemastore.org:443"
+    ]
+  },
+  {
+    "name": "GOOGLE MISC",
+    "decision": "allow",
+    "actions": [
+      "connect:tcp"
+    ],
+    "resources": [
+      "**.gstatic.com:443",
+      "**.googleusercontent.com:443",
+      "apis.google.com:443",
+      "play.google.com:443",
+      "www.google.com:443",
+      "csp.withgoogle.com:443"
+    ]
+  },
+  {
+    "name": "DEV PLATFORMS",
+    "decision": "allow",
+    "actions": [
+      "connect:tcp"
+    ],
+    "resources": [
+      "supabase.com:443",
+      "clerk.com:443",
+      "figma.com:443",
+      "app.daytona.io:443"
+    ]
+  },
+  {
+    "name": "LET'S ENCRYPT",
+    "decision": "allow",
+    "actions": [
+      "connect:tcp"
+    ],
+    "resources": [
+      "**.lencr.org:80",
+      "**.lencr.org:443"
+    ]
+  },
+  {
+    "name": "DIGICERT",
+    "decision": "allow",
+    "actions": [
+      "connect:tcp"
+    ],
+    "resources": [
+      "ocsp.digicert.com:80",
+      "crl*.digicert.com:80",
+      "cacerts.digicert.com:80",
+      "*.one.digicert.com:80",
+      "*.one.au.digicert.com:80",
+      "*.one.ch.digicert.com:80",
+      "*.one.nl.digicert.com:80",
+      "*.one.digicert.co.jp:80"
+    ]
+  },
+  {
+    "name": "SECTIGO / COMODO",
+    "decision": "allow",
+    "actions": [
+      "connect:tcp"
+    ],
+    "resources": [
+      "ocsp.sectigo.com:80",
+      "crl.sectigo.com:80",
+      "crt.sectigo.com:80",
+      "ocsp.comodoca.com:80",
+      "crl.comodoca.com:80",
+      "ocsp.usertrust.com:80",
+      "crl.usertrust.com:80"
+    ]
+  },
+  {
+    "name": "GOOGLE / AMAZON / MICROSOFT PKI",
+    "decision": "allow",
+    "actions": [
+      "connect:tcp"
+    ],
+    "resources": [
+      "**.pki.goog:80",
+      "**.pki.goog:443",
+      "**.amazontrust.com:80",
+      "**.amazontrust.com:443",
+      "isrg.trustid.ocsp.identrust.com:80",
+      "**.pki.microsoft.com:80",
+      "**.pki.microsoft.com:443"
+    ]
+  },
+  {
+    "name": "GLOBALSIGN",
+    "decision": "allow",
+    "actions": [
+      "connect:tcp"
+    ],
+    "resources": [
+      "crl.globalsign.com:80",
+      "crl.globalsign.net:80",
+      "ocsp.globalsign.com:80",
+      "ocsp.globalsign.com:443",
+      "ocsp2.globalsign.com:80",
+      "ocsp2.globalsign.com:443"
+    ]
+  },
+  {
+    "name": "UBUNTU",
+    "decision": "allow",
+    "actions": [
+      "connect:tcp"
+    ],
+    "resources": [
+      "archive.ubuntu.com:80",
+      "archive.ubuntu.com:443",
+      "security.ubuntu.com:80",
+      "security.ubuntu.com:443",
+      "ports.ubuntu.com:80",
+      "ports.ubuntu.com:443",
+      "ubuntu.com:443"
+    ]
+  },
+  {
+    "name": "OTHER LINUX DISTROS",
+    "decision": "allow",
+    "actions": [
+      "connect:tcp"
+    ],
+    "resources": [
+      "debian.org:443",
+      "**.debian.org:443",
+      "archlinux.org:443",
+      "alpinelinux.org:443",
+      "dl-cdn.alpinelinux.org:443",
+      "centos.org:443",
+      "fedoraproject.org:443",
+      "apt.llvm.org:443",
+      "packagecloud.io:443"
+    ]
+  },
+  {
+    "name": "VSCODE",
+    "decision": "allow",
+    "actions": [
+      "connect:tcp"
+    ],
+    "resources": [
+      "code.visualstudio.com:443",
+      "vscode.dev:443",
+      "vscode.download.prss.microsoft.com:443",
+      "update.code.visualstudio.com:443",
+      "**.vo.msecnd.net:443",
+      "**.gallery.vsassets.io:443",
+      "**.gallerycdn.vsassets.io:443"
+    ]
+  },
+  {
+    "name": "DOCKER",
+    "decision": "allow",
+    "actions": [
+      "connect:tcp"
+    ],
+    "resources": [
+      "docker.com:443",
+      "**.docker.com:443",
+      "docker.io:443",
+      "**.docker.io:443",
+      "dhi.io:443",
+      "sbx-diagnostics.s3.us-east-1.amazonaws.com:443"
+    ]
+  },
+  {
+    "name": "CONTAINER REGISTRIES",
+    "decision": "allow",
+    "actions": [
+      "connect:tcp"
+    ],
+    "resources": [
+      "ghcr.io:443",
+      "gcr.io:443",
+      "**.gcr.io:443",
+      "mcr.microsoft.com:443",
+      "**.data.mcr.microsoft.com:443",
+      "quay.io:443",
+      "registry.k8s.io:443",
+      "k8s.io:443",
+      "public.ecr.aws:443"
+    ]
+  },
+  {
+    "name": "GITHUB",
+    "decision": "allow",
+    "actions": [
+      "connect:tcp"
+    ],
+    "resources": [
+      "github.com:443",
+      "*.github.com:443",
+      "*.githubusercontent.com:443",
+      "api.github.com:443",
+      "codeload.github.com:443",
+      "objects.githubusercontent.com:443"
+    ]
+  },
+  {
+    "name": "DOCKER MODEL RUNNER",
+    "decision": "allow",
+    "actions": [
+      "connect:tcp"
+    ],
+    "resources": [
+      "localhost:12434",
+      "host.docker.internal:12434"
+    ]
+  },
+  {
+    "name": "LOCAL DEV SERVER",
+    "decision": "allow",
+    "actions": [
+      "connect:tcp"
+    ],
+    "resources": [
+      "localhost:3000",
+      "localhost:3001",
+      "localhost:4000",
+      "localhost:5000",
+      "localhost:8000",
+      "localhost:8080",
+      "host.docker.internal:3000",
+      "host.docker.internal:8080"
+    ]
+  },
+  {
+    "name": "JUPYTER",
+    "decision": "allow",
+    "actions": [
+      "connect:tcp"
+    ],
+    "resources": [
+      "localhost:8888",
+      "localhost:8889",
+      "host.docker.internal:8888"
+    ]
+  },
+  {
+    "name": "POSTGRESQL",
+    "decision": "allow",
+    "actions": [
+      "connect:tcp"
+    ],
+    "resources": [
+      "localhost:5432",
+      "host.docker.internal:5432"
+    ]
+  },
+  {
+    "name": "MYSQL",
+    "decision": "allow",
+    "actions": [
+      "connect:tcp"
+    ],
+    "resources": [
+      "localhost:3306",
+      "host.docker.internal:3306"
+    ]
+  },
+  {
+    "name": "REDIS",
+    "decision": "allow",
+    "actions": [
+      "connect:tcp"
+    ],
+    "resources": [
+      "localhost:6379",
+      "host.docker.internal:6379"
+    ]
+  },
+  {
+    "name": "MONGODB",
+    "decision": "allow",
+    "actions": [
+      "connect:tcp"
+    ],
+    "resources": [
+      "localhost:27017",
+      "host.docker.internal:27017"
+    ]
+  },
+  {
+    "name": "ELASTICSEARCH",
+    "decision": "allow",
+    "actions": [
+      "connect:tcp"
+    ],
+    "resources": [
+      "localhost:9200",
+      "localhost:9300",
+      "host.docker.internal:9200"
+    ]
+  }
+]
