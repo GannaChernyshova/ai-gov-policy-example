@@ -3,45 +3,17 @@
 Run this kit from GitHub and ask the agent to apply its policies to your Docker
 organization.
 
-You need Docker Sandboxes (`sbx` v0.45 or later with custom-secret support)
+You need Docker Sandboxes (`sbx` v0.45 or later)
 and an account authorized to manage your organization's governance
 policies. The selected team must already exist. The example uses Docker's v3
 Codex workload; complete its agent sign-in separately.
 
-## 1. Configure your Docker Hub PAT
+Docker Hub registry authentication uses your existing `sbx` login session; see
+[Docker registry authentication](https://docs.docker.com/ai/sandboxes/workflows/authentication/#docker-registry).
+Governance API calls still require a valid JWT. This example does not configure
+credentials; the agent must verify API access before changing policies.
 
-Choose one option below. Run the commands on your **host**, before creating the
-sandbox. You also need the Docker Hub username that owns the PAT; supply it as
-`--kit-arg docker_username=YOUR_DOCKER_USERNAME` in step 2.
-
-### Option A: Store the PAT with sbx
-
-Replace `YOUR_DOCKER_HUB_PAT` with your PAT:
-
-```bash
-sbx secret set-custom --sandbox aig-policies \
-  --host hub.docker.com --env AIG_DOCKER_TOKEN \
-  --value 'YOUR_DOCKER_HUB_PAT'
-```
-
-### Option B: Use 1Password
-
-Store the PAT in 1Password and configure and authenticate its resolver on the host. Replace the
-reference with your vault, item, and field:
-
-```bash
-sbx secret set-custom --sandbox aig-policies \
-  --host hub.docker.com --env AIG_DOCKER_TOKEN \
-  --ref 'op://YOUR_VAULT/Docker Hub/password'
-```
-
-Custom secrets are experimental.
-
-The PAT stays on the host. The sandbox receives a placeholder that the proxy
-replaces in requests to Docker Hub. Never put the PAT in chat, kit arguments,
-or repository files.
-
-## 2. Run the kit from GitHub
+## 1. Run the kit from GitHub
 
 Allow the repository as a kit source on your host. Inspect
 `sbx settings get kit.allowedSources` first and retain any existing entries.
@@ -51,19 +23,19 @@ For a host using the default allowlist:
 sbx settings set kit.allowedSources '["docker.io/","github.com/GannaChernyshova/ai-gov-policy-example"]'
 ```
 
-Run the command below, replacing the Docker organization, team, and username. Use the same sandbox name as the secret setup:
+Run the command below, replacing the Docker organization, team, and username.:
 
 ```bash
 sbx run docker.io/docker/sbx-kit-codex:0.155.1 --name aig-policies \
-  --kit 'git+https://github.com/GannaChernyshova/ai-gov-policy-example.git#ref=v1.0.7' \
+  --kit 'git+https://github.com/GannaChernyshova/ai-gov-policy-example.git#ref=v1.0.8' \
   --kit-arg org=YOUR_DOCKER_ORG \
   --kit-arg team=YOUR_TEAM \
   --kit-arg docker_username=YOUR_DOCKER_USERNAME
 ```
 
-The command uses the `v1.0.7` release. The organization argument is required.
+The command uses the `v1.0.8` release. The organization argument is required.
 
-## 3. Ask the agent to apply the policies
+## 2. Ask the agent to apply the policies
 
 Copy and paste this into the agent:
 
@@ -88,22 +60,14 @@ sandbox mounts; they do not hide `.env` files inside an allowed workspace. Copy
 policy backups out of the sandbox before removing it if you need to retain them.
 
 To return to the same sandbox, run `sbx run --name aig-policies`. To use different
-kit arguments or a newer kit revision, create a sandbox with a new name and
-configure its secret under that name.
+kit arguments or a newer kit revision, create a sandbox with a new name.
 
 References: [Kits](https://docs.docker.com/ai/sandboxes/customize/),
-[Custom secrets](https://docs.docker.com/ai/sandboxes/configuration/credentials/#custom-secrets),
 and [AI Governance API](https://docs.docker.com/reference/api/ai-governance/latest/).
 
 ## If authentication returns 401
 
-Ask the agent which full URL failed. `POST https://hub.docker.com/v2/auth/token`
-exchanges the username and PAT for a JWT; a 401 there means the exchange failed.
-Confirm the PAT belongs to the supplied username and the custom secret is scoped
-to the sandbox name you launched. If the secret was added after sandbox creation,
-follow the [existing-sandbox placeholder setup](https://docs.docker.com/ai/sandboxes/configuration/credentials/#install-npm-packages-from-github-packages).
-
-A 401 from `/v2/orgs/.../governance/policies` after a successful exchange is a
-different failure: the agent must use the returned JWT, refreshing it if expired.
-Share only the failing method, URL, status, and your host's `sbx version`, never
-the PAT, JWT, authorization headers, or token response body.
+Ask the agent to report the failing method, full URL, and status without exposing
+credentials. A failure at `/v2/auth/token` means the JWT exchange failed; a failure
+at `/v2/orgs/.../governance/policies` occurs when using the JWT. A successful Docker
+image pull alone does not verify governance API access.

@@ -14,8 +14,8 @@ Write credential-free backups to a new directory under the sandbox user's home.
 ## Authentication inside the sandbox
 
 Read `AIG_DOCKER_USERNAME` and `AIG_DOCKER_TOKEN` from the environment and build
-requests in memory. The token variable can be a custom-secret placeholder; the
-host proxy replaces it in requests to `hub.docker.com`. Never print credentials,
+requests in memory. Use only available, authorized credentials. A custom-secret
+placeholder alone does not establish that the real secret reaches the API. Never print credentials,
 pass the PAT in command arguments, commit secrets, or ask for secrets in chat.
 
 Exchange the credential with `POST https://hub.docker.com/v2/auth/token`, setting
@@ -34,7 +34,8 @@ https://docs.docker.com/reference/api/hub/latest/operations/AuthCreateAccessToke
 First perform an authenticated
 `GET https://hub.docker.com/v2/orgs/{AIG_ORG}/governance/policies`.
 If credentials are missing or authentication fails, report the precise blocker
-and refer to the host credential setup in README.md. Do not assume Docker Desktop
+and request secure governance credential configuration. Do not create or change
+host secret mappings without a user request. Do not assume Docker Desktop
 or GitHub authentication grants governance access. Read structured network errors:
 refer pending approvals to the host approval flow and organization policy blocks
 to the customer's administrator. Never bypass sandbox network controls.
