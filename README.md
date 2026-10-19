@@ -41,13 +41,13 @@ Run the command below, replacing the Docker organization, team, and username. Us
 
 ```bash
 sbx run docker.io/docker/sbx-kit-codex:0.155.1 --name aig-policies \
-  --kit 'git+https://github.com/GannaChernyshova/ai-gov-policy-example.git#ref=v1.0.0' \
+  --kit 'git+https://github.com/GannaChernyshova/ai-gov-policy-example.git#ref=v1.0.1' \
   --kit-arg org=YOUR_DOCKER_ORG \
   --kit-arg team=YOUR_TEAM \
   --kit-arg docker_username=YOUR_DOCKER_USERNAME
 ```
 
-The command uses the `v1.0.0` release.
+The command uses the `v1.0.1` release. The organization argument is required.
 
 ## 3. Ask the agent to apply the policies
 

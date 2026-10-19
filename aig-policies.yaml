@@ -8,7 +8,7 @@ build: |
   COPY policies/ /opt/aig-policies/policies/
 args:
   org:
-    default: annachernyshovademo
+    required: true
     pattern: '[a-z0-9][a-z0-9_-]*'
     env: AIG_ORG
   team:

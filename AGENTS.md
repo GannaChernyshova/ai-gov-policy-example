@@ -5,7 +5,7 @@ Write credential-free backups to a new directory under the sandbox user's home.
 
 ## Target and API
 
-- Use `AIG_ORG` and `AIG_TEAM`, defaulting to `annachernyshovademo` and `aig-demo-team`. “AIG” means AI Governance, not an organization slug. Never infer the organization from the Docker username.
+- Require `AIG_ORG` to explicitly select the target organization. Use `AIG_TEAM`, defaulting to `aig-demo-team`. “AIG” means AI Governance, not an organization slug. Never infer the organization from the Docker username.
 - A request to apply the policies authorizes deployment; do not ask again for routine confirmation. Launching the kit alone does not authorize deployment.
 - API base: `https://hub.docker.com/v2`.
 - Reference: https://docs.docker.com/reference/api/ai-governance/latest/
