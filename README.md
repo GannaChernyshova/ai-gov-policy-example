@@ -13,27 +13,18 @@ Codex workload; complete its agent sign-in separately.
 Choose one option below. Run the commands on your **host**, before creating the
 sandbox.
 
-### Option A: Store the PAT on your host
+### Option A: Store the PAT with sbx
 
 Replace `YOUR_DOCKER_HUB_PAT` with your PAT:
 
 ```bash
-mkdir -p "$HOME/.config/aig"
-echo 'YOUR_DOCKER_HUB_PAT' > "$HOME/.config/aig/docker-hub-pat"
-chmod 600 "$HOME/.config/aig/docker-hub-pat"
-```
-
-This stores the PAT outside the repository, readable only by your user. The
-`echo` command may also save the PAT in your shell history; use the 1Password
-option below if you want to avoid that.
-
-Tell `sbx` where to read it:
-
-```bash
 sbx secret set-custom --sandbox aig-policies \
   --host hub.docker.com --env AIG_DOCKER_TOKEN \
-  --command 'cat "$HOME/.config/aig/docker-hub-pat"'
+  --value 'YOUR_DOCKER_HUB_PAT'
 ```
+
+No separate file or `echo` command is needed. The PAT can appear in shell history
+and process arguments; use the 1Password option below to avoid that exposure.
 
 ### Option B: Use 1Password
 
@@ -66,13 +57,13 @@ Run the command below, replacing the Docker organization, team, and username. Us
 
 ```bash
 sbx run docker.io/docker/sbx-kit-codex:0.155.1 --name aig-policies \
-  --kit 'git+https://github.com/GannaChernyshova/ai-gov-policy-example.git#ref=v1.0.3' \
+  --kit 'git+https://github.com/GannaChernyshova/ai-gov-policy-example.git#ref=v1.0.4' \
   --kit-arg org=YOUR_DOCKER_ORG \
   --kit-arg team=YOUR_TEAM \
   --kit-arg docker_username=YOUR_DOCKER_USERNAME
 ```
 
-The command uses the `v1.0.3` release. The organization argument is required.
+The command uses the `v1.0.4` release. The organization argument is required.
 
 ## 3. Ask the agent to apply the policies
 
