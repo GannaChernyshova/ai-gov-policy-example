@@ -23,8 +23,7 @@ sbx secret set-custom --sandbox aig-policies \
   --value 'YOUR_DOCKER_HUB_PAT'
 ```
 
-No separate file or `echo` command is needed. The PAT can appear in shell history
-and process arguments; use the 1Password option below to avoid that exposure.
+No separate file or `echo` command is needed.
 
 ### Option B: Use 1Password
 
@@ -57,13 +56,13 @@ Run the command below, replacing the Docker organization, team, and username. Us
 
 ```bash
 sbx run docker.io/docker/sbx-kit-codex:0.155.1 --name aig-policies \
-  --kit 'git+https://github.com/GannaChernyshova/ai-gov-policy-example.git#ref=v1.0.4' \
+  --kit 'git+https://github.com/GannaChernyshova/ai-gov-policy-example.git#ref=v1.0.5' \
   --kit-arg org=YOUR_DOCKER_ORG \
   --kit-arg team=YOUR_TEAM \
   --kit-arg docker_username=YOUR_DOCKER_USERNAME
 ```
 
-The command uses the `v1.0.4` release. The organization argument is required.
+The command uses the `v1.0.5` release. The organization argument is required.
 
 ## 3. Ask the agent to apply the policies
 
