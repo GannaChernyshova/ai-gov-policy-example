@@ -10,10 +10,36 @@ Codex workload; complete its agent sign-in separately.
 
 Docker Hub registry authentication uses your existing `sbx` login session; see
 [Docker registry authentication](https://docs.docker.com/ai/sandboxes/workflows/authentication/#docker-registry).
-Governance API calls still require a valid JWT. This example does not configure
-credentials; the agent must verify API access before changing policies.
+Governance API calls require a JWT obtained by exchanging a Docker Hub credential.
+The agent must verify API access before changing policies.
 
-## 1. Run the kit from GitHub
+## 1. Store governance credentials
+
+On your host, store a Docker Hub PAT for this sandbox:
+
+```bash
+sbx secret set-custom \
+  --sandbox aig-policies \
+  --host hub.docker.com \
+  --env AIG_DOCKER_TOKEN \
+  --value 'YOUR_DOCKER_HUB_PAT'
+```
+
+`--sandbox aig-policies` scopes the secret to the sandbox used below. Supply the
+PAT owner's username through `--kit-arg docker_username` when launching the kit.
+For 1Password, replace `--value ...` with
+`--ref 'op://YOUR_VAULT/Docker Hub/password'` using a configured host resolver.
+
+Store the secret before creating the sandbox. For an existing sandbox, set
+`AIG_DOCKER_TOKEN` inside it to the generated placeholder printed by the command.
+When updating a secret, pass `--placeholder` with its existing placeholder.
+
+Custom secrets rely on proxy substitution in the token request's JSON body.
+This path returned 401 in our sandbox checks, while direct credentials succeeded;
+verify the JWT exchange on your `sbx` version before applying policies.
+See [custom secrets](https://docs.docker.com/ai/sandboxes/configuration/credentials/#custom-secrets).
+
+## 2. Run the kit from GitHub
 
 Allow the repository as a kit source on your host. Inspect
 `sbx settings get kit.allowedSources` first and retain any existing entries.
@@ -23,19 +49,19 @@ For a host using the default allowlist:
 sbx settings set kit.allowedSources '["docker.io/","github.com/GannaChernyshova/ai-gov-policy-example"]'
 ```
 
-Run the command below, replacing the Docker organization, team, and username.:
+Run the command below, replacing the Docker organization, team, and username:
 
 ```bash
 sbx run docker.io/docker/sbx-kit-codex:0.155.1 --name aig-policies \
-  --kit 'git+https://github.com/GannaChernyshova/ai-gov-policy-example.git#ref=v1.0.8' \
+  --kit 'git+https://github.com/GannaChernyshova/ai-gov-policy-example.git#ref=v1.0.9' \
   --kit-arg org=YOUR_DOCKER_ORG \
   --kit-arg team=YOUR_TEAM \
   --kit-arg docker_username=YOUR_DOCKER_USERNAME
 ```
 
-The command uses the `v1.0.8` release. The organization argument is required.
+The command uses the `v1.0.9` release. The organization argument is required.
 
-## 2. Ask the agent to apply the policies
+## 3. Ask the agent to apply the policies
 
 Copy and paste this into the agent:
 
@@ -62,7 +88,7 @@ policy backups out of the sandbox before removing it if you need to retain them.
 To return to the same sandbox, run `sbx run --name aig-policies`. To use different
 kit arguments or a newer kit revision, create a sandbox with a new name.
 
-References: [Kits](https://docs.docker.com/ai/sandboxes/customize/),
+References: [Kits](https://docs.docker.com/ai/sandboxes/customize/)
 and [AI Governance API](https://docs.docker.com/reference/api/ai-governance/latest/).
 
 ## If authentication returns 401
