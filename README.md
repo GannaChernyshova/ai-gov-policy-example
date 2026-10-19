@@ -55,13 +55,13 @@ Run the command below, replacing the Docker organization, team, and username. Us
 
 ```bash
 sbx run docker.io/docker/sbx-kit-codex:0.155.1 --name aig-policies \
-  --kit 'git+https://github.com/GannaChernyshova/ai-gov-policy-example.git#ref=v1.0.6' \
+  --kit 'git+https://github.com/GannaChernyshova/ai-gov-policy-example.git#ref=v1.0.7' \
   --kit-arg org=YOUR_DOCKER_ORG \
   --kit-arg team=YOUR_TEAM \
   --kit-arg docker_username=YOUR_DOCKER_USERNAME
 ```
 
-The command uses the `v1.0.6` release. The organization argument is required.
+The command uses the `v1.0.7` release. The organization argument is required.
 
 ## 3. Ask the agent to apply the policies
 
@@ -94,3 +94,16 @@ configure its secret under that name.
 References: [Kits](https://docs.docker.com/ai/sandboxes/customize/),
 [Custom secrets](https://docs.docker.com/ai/sandboxes/configuration/credentials/#custom-secrets),
 and [AI Governance API](https://docs.docker.com/reference/api/ai-governance/latest/).
+
+## If authentication returns 401
+
+Ask the agent which full URL failed. `POST https://hub.docker.com/v2/auth/token`
+exchanges the username and PAT for a JWT; a 401 there means the exchange failed.
+Confirm the PAT belongs to the supplied username and the custom secret is scoped
+to the sandbox name you launched. If the secret was added after sandbox creation,
+follow the [existing-sandbox placeholder setup](https://docs.docker.com/ai/sandboxes/configuration/credentials/#install-npm-packages-from-github-packages).
+
+A 401 from `/v2/orgs/.../governance/policies` after a successful exchange is a
+different failure: the agent must use the returned JWT, refreshing it if expired.
+Share only the failing method, URL, status, and your host's `sbx version`, never
+the PAT, JWT, authorization headers, or token response body.

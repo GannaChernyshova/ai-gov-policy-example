@@ -18,20 +18,37 @@ requests in memory. The token variable can be a custom-secret placeholder; the
 host proxy replaces it in requests to `hub.docker.com`. Never print credentials,
 pass the PAT in command arguments, commit secrets, or ask for secrets in chat.
 
-Exchange the credential with `POST /auth/token`, using JSON fields `identifier`
-(username) and `secret` (PAT). Use the returned `access_token` as
+Exchange the credential with `POST https://hub.docker.com/v2/auth/token`, setting
+`Content-Type: application/json`. Build the JSON fields `identifier` and `secret`
+from the actual environment values of `AIG_DOCKER_USERNAME` and `AIG_DOCKER_TOKEN`;
+do not send their variable names literally. Do not use `/auth/token` at the host
+root, the legacy `/users/login` endpoint, or `username`/`password` JSON fields.
+Require a successful response containing a nonempty `access_token` before any
+governance request. Use that returned JWT as
 `Authorization: Bearer <token>` and refresh it on expiry. Never log token request
 or response bodies. Do not use the PAT directly as a bearer token or configure
 PAT header injection that would overwrite the JWT. If using an OAT, follow the
 token endpoint's organization identifier requirements:
 https://docs.docker.com/reference/api/hub/latest/operations/AuthCreateAccessToken/
 
-First perform an authenticated `GET /orgs/{AIG_ORG}/governance/policies`.
+First perform an authenticated
+`GET https://hub.docker.com/v2/orgs/{AIG_ORG}/governance/policies`.
 If credentials are missing or authentication fails, report the precise blocker
 and refer to the host credential setup in README.md. Do not assume Docker Desktop
 or GitHub authentication grants governance access. Read structured network errors:
 refer pending approvals to the host approval flow and organization policy blocks
 to the customer's administrator. Never bypass sandbox network controls.
+
+For a 401, report the exact request method, full URL, and status, without headers
+or token response bodies. A token-exchange 401 means no JWT was obtained; do not
+diagnose it as a governance scope failure. Check that both credential variables
+are set (report presence only), the username owns the PAT, and the custom secret
+is configured for this sandbox and `hub.docker.com`. A placeholder is expected;
+do not reject it for lacking a `dckr_pat_` prefix. If a secret was added after
+creation, use the documented placeholder setup for an existing sandbox. Ask for
+the host's `sbx version` if injection behavior remains in doubt. A governance 401
+after a successful exchange calls for a fresh JWT and a check that the request
+uses it rather than the PAT or placeholder.
 
 ## Deployment procedure
 
