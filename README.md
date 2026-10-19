@@ -3,25 +3,53 @@
 Run this kit from GitHub and ask the agent to apply its policies to your Docker
 organization.
 
-You need Docker Sandboxes (`sbx` v0.45 or later with custom-secret support), Docker
-with Buildx, and an account authorized to manage your organization's governance
+You need Docker Sandboxes (`sbx` v0.45 or later with custom-secret support)
+and an account authorized to manage your organization's governance
 policies. The selected team must already exist. The example uses Docker's v3
 Codex workload; complete its agent sign-in separately.
 
 ## 1. Configure your Docker Hub PAT
 
-On your **Mac**, open Keychain Access and create a password item named
-`aig-docker-token`, with your Docker Hub PAT as its password. Then run on the host:
+Choose one option below. Run the commands on your **host**, before creating the
+sandbox.
+
+### Option A: Store the PAT on your host
+
+In Bash or Zsh, run this block and enter your PAT at the hidden prompt. It saves
+the PAT in a file readable only by your user, outside the repository:
+
+```bash
+(
+  umask 077
+  mkdir -p "$HOME/.config/aig"
+  printf 'Docker Hub PAT: '
+  IFS= read -r -s aig_pat
+  printf '\n'
+  printf '%s' "$aig_pat" > "$HOME/.config/aig/docker-hub-pat"
+  chmod 600 "$HOME/.config/aig/docker-hub-pat"
+)
+```
+
+Tell `sbx` where to read it:
 
 ```bash
 sbx secret set-custom --sandbox aig-policies \
   --host hub.docker.com --env AIG_DOCKER_TOKEN \
-  --command '/usr/bin/security find-generic-password -s aig-docker-token -w'
+  --command 'cat "$HOME/.config/aig/docker-hub-pat"'
 ```
 
-For a password manager instead of macOS Keychain, replace `--command ...` with
-`--ref 'op://YOUR_VAULT/Docker Hub/password'` (requires a configured, authenticated
-resolver). Custom secrets are experimental.
+### Option B: Use 1Password
+
+Store the PAT in 1Password and configure and authenticate its resolver on the host. Replace the
+reference with your vault, item, and field:
+
+```bash
+sbx secret set-custom --sandbox aig-policies \
+  --host hub.docker.com --env AIG_DOCKER_TOKEN \
+  --ref 'op://YOUR_VAULT/Docker Hub/password'
+```
+
+Custom secrets are experimental.
 
 The PAT stays on the host. The sandbox receives a placeholder that the proxy
 replaces in requests to Docker Hub. Never put the PAT in chat, kit arguments,
@@ -41,18 +69,21 @@ Run the command below, replacing the Docker organization, team, and username. Us
 
 ```bash
 sbx run docker.io/docker/sbx-kit-codex:0.155.1 --name aig-policies \
-  --kit 'git+https://github.com/GannaChernyshova/ai-gov-policy-example.git#ref=v1.0.1' \
+  --kit 'git+https://github.com/GannaChernyshova/ai-gov-policy-example.git#ref=v1.0.2' \
   --kit-arg org=YOUR_DOCKER_ORG \
   --kit-arg team=YOUR_TEAM \
   --kit-arg docker_username=YOUR_DOCKER_USERNAME
 ```
 
-The command uses the `v1.0.1` release. The organization argument is required.
+The command uses the `v1.0.2` release. The organization argument is required.
 
 ## 3. Ask the agent to apply the policies
 
-> Apply the included AI Governance policies to the configured organization and
-> team. Follow the kit's AGENTS.md, back up existing policies, and verify the result.
+Copy and paste this into the agent:
+
+```text
+Apply the included AI Governance policies to the organization in AIG_ORG and the team in AIG_TEAM. Follow the kit's AGENTS.md, back up existing policies before changing them, preserve unrelated policies, and verify the resulting scopes and rules. Report the policy IDs, rule counts, and any failures.
+```
 
 The kit registers `AGENTS.md` with the agent and supplies policy files under
 `/opt/aig-policies`. The agent backs up existing policies, applies changes, and
