@@ -45,21 +45,21 @@ Then, from a checkout of this repository, register the JWT for the sandbox used 
 ```
 
 The script runs `sbx secret set-custom --sandbox aig-policies --host hub.docker.com
---env AIG_DOCKER_JWT --value <JWT>` and prints the generated placeholder. Run it
+--env AIG_DOCKER_JWT --placeholder sbx-cs-aig-docker-jwt --value <JWT>`. Run it
 before creating the sandbox. For an existing sandbox, set `AIG_DOCKER_JWT` inside
-it to that placeholder.
+it to that placeholder once.
 
-The JWT is short-lived. When the agent's requests start returning 401, refresh the
-secret by passing the existing placeholder:
-
-```bash
-AIG_PLACEHOLDER=sbx-cs-... ./scripts/aig-jwt.sh --set YOUR_DOCKER_USERNAME aig-policies
-```
+The JWT is short-lived. When the agent's requests start returning 401, rerun the same
+command. `sbx secret set-custom` fails if the variable already exists and there is no
+update command, so the script first removes the old secret, then recreates it with the
+same placeholder. A running sandbox picks up the new JWT without changes.
 
 Alternatively, let `sbx` refresh it automatically. `aig-jwt.sh YOUR_DOCKER_USERNAME`
 without `--set` prints only the JWT, so it can serve as the secret's command. The
 command runs under `sbx`, so `DOCKER_PAT` must be in the environment of the process
-that starts it:
+that starts it. Run it only once per sandbox: if `AIG_DOCKER_JWT` already exists in
+that scope, remove it first with
+`sbx secret rm --sandbox aig-policies --placeholder PLACEHOLDER`.
 
 ```bash
 sbx secret set-custom --sandbox aig-policies --host hub.docker.com \

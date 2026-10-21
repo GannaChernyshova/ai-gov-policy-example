@@ -8,8 +8,10 @@
 #   aig-jwt.sh --set DOCKER_USERNAME [SANDBOX]  register the JWT as AIG_DOCKER_JWT with
 #                                               `sbx secret set-custom` (SANDBOX defaults to aig-policies)
 #
-# To refresh an existing secret, re-run with --set and the placeholder printed the first
-# time: AIG_PLACEHOLDER=sbx-cs-... aig-jwt.sh --set DOCKER_USERNAME
+# --set is re-runnable: `sbx secret set-custom` fails if the env already exists in the
+# scope and there is no update command, so any existing secret with the fixed
+# placeholder below is removed first. The placeholder stays the same across refreshes,
+# so a running sandbox keeps working without changes.
 #
 # PAT source: the DOCKER_PAT environment variable (export DOCKER_PAT="..."). Requires
 # curl and jq on the host.
@@ -35,9 +37,11 @@ if ! $set_secret; then
   exit 0
 fi
 
+placeholder=sbx-cs-aig-docker-jwt
+
+# Remove the previous secret, if any. A first run has nothing to delete.
+printf 'y\n' | sbx secret rm --sandbox "$sandbox" --placeholder "$placeholder" >/dev/null 2>&1 || true
+
 # The JWT is short-lived, so exposing it in this process's arguments is a small risk.
-args=(secret set-custom --sandbox "$sandbox" --host hub.docker.com --env AIG_DOCKER_JWT --value "$jwt")
-if [ -n "${AIG_PLACEHOLDER:-}" ]; then
-  args+=(--placeholder "$AIG_PLACEHOLDER")
-fi
-sbx "${args[@]}"
+sbx secret set-custom --sandbox "$sandbox" --host hub.docker.com --env AIG_DOCKER_JWT \
+  --placeholder "$placeholder" --value "$jwt"
