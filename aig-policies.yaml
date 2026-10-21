@@ -15,10 +15,6 @@ args:
     default: aig-demo-team
     pattern: '[a-zA-Z0-9][a-zA-Z0-9_.-]*'
     env: AIG_TEAM
-  docker_username:
-    required: true
-    pattern: '[a-z0-9][a-z0-9_-]*'
-    env: AIG_DOCKER_USERNAME
 capabilities:
   - type: com.docker.sandbox/network-policy@1
     config:

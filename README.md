@@ -1,7 +1,7 @@
 # Apply AI Governance policies with Docker Sandboxes
 
-Run this kit from GitHub and ask the agent to apply its policies to your Docker
-organization.
+Clone this repository, run it as a kit, and ask the agent to apply its policies to
+your Docker organization.
 
 You need Docker Sandboxes (`sbx` v0.45 or later)
 and an account authorized to manage your organization's governance
@@ -13,7 +13,16 @@ Docker Hub registry authentication uses your existing `sbx` login session; see
 Governance API calls require a JWT obtained by exchanging a Docker Hub credential.
 The agent must verify API access before changing policies.
 
-## 1. Store governance credentials
+## 1. Clone the repository
+
+```bash
+git clone https://github.com/GannaChernyshova/ai-gov-policy-example.git
+cd ai-gov-policy-example
+```
+
+Run the remaining commands from this directory.
+
+## 2. Store governance credentials
 
 The governance API requires a JWT, and the token endpoint takes the PAT in a JSON
 body, which sandbox proxy substitution cannot fill in. So the exchange runs on your
@@ -22,10 +31,11 @@ short-lived JWT and registers the JWT as a custom secret. The PAT never enters t
 sandbox, and the agent only sees a placeholder in `AIG_DOCKER_JWT`, which the proxy
 swaps for the real JWT in the `Authorization: Bearer` header on `hub.docker.com`.
 
-Store your PAT in the macOS Keychain (`curl` and `jq` are required on the host):
+Export your PAT in the shell you run the script from (`curl` and `jq` are required
+on the host):
 
 ```bash
-security add-generic-password -s aig-docker-hub -a "$USER" -w   # prompts for the PAT
+export DOCKER_PAT="your_actual_token_here"
 ```
 
 Then, from a checkout of this repository, register the JWT for the sandbox used below:
@@ -47,7 +57,9 @@ AIG_PLACEHOLDER=sbx-cs-... ./scripts/aig-jwt.sh --set YOUR_DOCKER_USERNAME aig-p
 ```
 
 Alternatively, let `sbx` refresh it automatically. `aig-jwt.sh YOUR_DOCKER_USERNAME`
-without `--set` prints only the JWT, so it can serve as the secret's command:
+without `--set` prints only the JWT, so it can serve as the secret's command. The
+command runs under `sbx`, so `DOCKER_PAT` must be in the environment of the process
+that starts it:
 
 ```bash
 sbx secret set-custom --sandbox aig-policies --host hub.docker.com \
@@ -58,31 +70,22 @@ sbx secret set-custom --sandbox aig-policies --host hub.docker.com \
 See [custom secrets](https://docs.docker.com/ai/sandboxes/configuration/credentials/#custom-secrets).
 Replacement applies only to request headers, never bodies.
 
-## 2. Run the kit from GitHub
+## 3. Run the kit
 
-Allow the repository as a kit source on your host. Inspect
-`sbx settings get kit.allowedSources` first and retain any existing entries.
-For a host using the default allowlist:
-
-```bash
-sbx settings set kit.allowedSources '["docker.io/","github.com/GannaChernyshova/ai-gov-policy-example"]'
-```
-
-Run the command below, replacing the Docker organization, team, and username:
+Run the command below, replacing the Docker organization and team:
 
 ```bash
 sbx run docker.io/docker/sbx-kit-codex:0.155.1 --name aig-policies \
-  --kit 'git+https://github.com/GannaChernyshova/ai-gov-policy-example.git#ref=main' \
+  --kit . \
   --kit-arg org=YOUR_DOCKER_ORG \
-  --kit-arg team=YOUR_TEAM \
-  --kit-arg docker_username=YOUR_DOCKER_USERNAME
+  --kit-arg team=YOUR_TEAM
 ```
 
-The command uses the `main` branch; pin a release tag once one includes
-`scripts/aig-jwt.sh`. The organization argument is required. The agent does not
-read the Docker username; the script in step 1 uses it for the token exchange.
+The kit is loaded from the cloned directory, so your host must allow local kits
+(`sbx settings get kit.allowLocalKits`; it is on by default). The organization
+argument is required.
 
-## 3. Ask the agent to apply the policies
+## 4. Ask the agent to apply the policies
 
 Copy and paste this into the agent:
 

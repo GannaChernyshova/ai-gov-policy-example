@@ -11,8 +11,8 @@
 # To refresh an existing secret, re-run with --set and the placeholder printed the first
 # time: AIG_PLACEHOLDER=sbx-cs-... aig-jwt.sh --set DOCKER_USERNAME
 #
-# PAT source: macOS Keychain item "aig-docker-hub" (security add-generic-password
-# -s aig-docker-hub -a "$USER" -w). Requires curl and jq on the host.
+# PAT source: the DOCKER_PAT environment variable (export DOCKER_PAT="..."). Requires
+# curl and jq on the host.
 set -euo pipefail
 
 set_secret=false
@@ -22,7 +22,7 @@ if [ "${1:-}" = "--set" ]; then
 fi
 username=${1:?usage: aig-jwt.sh [--set] DOCKER_USERNAME [SANDBOX]}
 sandbox=${2:-aig-policies}
-pat=$(security find-generic-password -s aig-docker-hub -w)
+pat=${DOCKER_PAT:?export DOCKER_PAT with your Docker Hub PAT first}
 
 # Body goes through stdin so the PAT never appears in a process argument list.
 jwt=$(printf '{"identifier":"%s","secret":"%s"}' "$username" "$pat" \
