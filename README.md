@@ -76,12 +76,14 @@ Run the command below, replacing the Docker organization and team:
 
 ```bash
 sbx run docker.io/docker/sbx-kit-codex:0.155.1 --name aig-policies \
-  --kit . \
+  --kit "$PWD" \
   --kit-arg org=YOUR_DOCKER_ORG \
   --kit-arg team=YOUR_TEAM
 ```
 
-The kit is loaded from the cloned directory, so your host must allow local kits
+The kit is loaded from the cloned directory. Pass its full path (`"$PWD"`), not
+`.`: `sbx` takes the kit name from the last path component, and `.` is rejected as
+an invalid name. Your host must allow local kits
 (`sbx settings get kit.allowLocalKits`; it is on by default). The organization
 argument is required.
 
