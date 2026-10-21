@@ -13,23 +13,22 @@ Write credential-free backups to a new directory under the sandbox user's home.
 
 ## Authentication inside the sandbox
 
-Read `AIG_DOCKER_USERNAME` and `AIG_DOCKER_TOKEN` from the environment and build
-requests in memory. Use only available, authorized credentials. A custom-secret
-placeholder alone does not establish that the real secret reaches the API. Never print credentials,
-pass the PAT in command arguments, commit secrets, or ask for secrets in chat.
+`AIG_DOCKER_JWT` holds a custom-secret placeholder, not a real token. The host
+exchanged the Docker Hub PAT for a short-lived JWT and registered it as a custom
+secret; the sandbox proxy replaces the placeholder with the real JWT when it
+appears in a request header to `hub.docker.com`. Use only available, authorized
+credentials. Never print credentials, pass tokens in command arguments, commit
+secrets, or ask for secrets in chat.
 
-Exchange the credential with `POST https://hub.docker.com/v2/auth/token`, setting
-`Content-Type: application/json`. Build the JSON fields `identifier` and `secret`
-from the actual environment values of `AIG_DOCKER_USERNAME` and `AIG_DOCKER_TOKEN`;
-do not send their variable names literally. Do not use `/auth/token` at the host
-root, the legacy `/users/login` endpoint, or `username`/`password` JSON fields.
-Require a successful response containing a nonempty `access_token` before any
-governance request. Use that returned JWT as
-`Authorization: Bearer <token>` and refresh it on expiry. Never log token request
-or response bodies. Do not use the PAT directly as a bearer token or configure
-PAT header injection that would overwrite the JWT. If using an OAT, follow the
-token endpoint's organization identifier requirements:
-https://docs.docker.com/reference/api/hub/latest/operations/AuthCreateAccessToken/
+The governance API requires a JWT, and you already have it: do not call
+`/v2/auth/token` and do not look for a PAT. Send
+`Authorization: Bearer $AIG_DOCKER_JWT` as a header on every request to
+`hub.docker.com`, expanding the environment variable in the header itself (for
+example `curl -H "Authorization: Bearer $AIG_DOCKER_JWT" ...`). Substitution works
+only in headers: never put the variable or its value in a request body, query
+string, or URL. The placeholder is expected; do not reject it for lacking a JWT
+shape or `dckr_pat_` prefix. Never log request or response bodies that may carry
+tokens.
 
 First perform an authenticated
 `GET https://hub.docker.com/v2/orgs/{AIG_ORG}/governance/policies`.
@@ -41,15 +40,14 @@ refer pending approvals to the host approval flow and organization policy blocks
 to the customer's administrator. Never bypass sandbox network controls.
 
 For a 401, report the exact request method, full URL, and status, without headers
-or token response bodies. A token-exchange 401 means no JWT was obtained; do not
-diagnose it as a governance scope failure. Check that both credential variables
-are set (report presence only), the username owns the PAT, and the custom secret
-is configured for this sandbox and `hub.docker.com`. A placeholder is expected;
-do not reject it for lacking a `dckr_pat_` prefix. If a secret was added after
-creation, use the documented placeholder setup for an existing sandbox. Ask for
-the host's `sbx version` if injection behavior remains in doubt. A governance 401
-after a successful exchange calls for a fresh JWT and a check that the request
-uses it rather than the PAT or placeholder.
+or response bodies. Check that `AIG_DOCKER_JWT` is set (report presence only), that
+the request carried `Authorization: Bearer $AIG_DOCKER_JWT` as a header, and that
+the custom secret is configured for this sandbox and `hub.docker.com`. The JWT is
+short-lived: a 401 after earlier successes means the host-side secret needs to
+refresh or be re-registered, which is a host action to request from the user. If a
+secret was added after creation, use the documented placeholder setup for an
+existing sandbox. Ask for the host's `sbx version` if injection behavior remains
+in doubt.
 
 ## Deployment procedure
 
