@@ -14,14 +14,14 @@ Write credential-free backups to a new directory under the sandbox user's home.
 ## Authentication inside the sandbox
 
 `AIG_DOCKER_JWT` holds a custom-secret placeholder, not a real token. The host
-exchanged the Docker Hub PAT for a short-lived JWT and registered it as a custom
+exchanged the Docker organization access token for a short-lived JWT and registered it as a custom
 secret; the sandbox proxy replaces the placeholder with the real JWT when it
 appears in a request header to `hub.docker.com`. Use only available, authorized
 credentials. Never print credentials, pass tokens in command arguments, commit
 secrets, or ask for secrets in chat.
 
 The governance API requires a JWT, and you already have it: do not call
-`/v2/auth/token` and do not look for a PAT. Send
+`/v2/auth/token` and do not look for an access token. Send
 `Authorization: Bearer $AIG_DOCKER_JWT` as a header on every request to
 `hub.docker.com`, expanding the environment variable in the header itself (for
 example `curl -H "Authorization: Bearer $AIG_DOCKER_JWT" ...`). Substitution works
@@ -52,7 +52,7 @@ in doubt.
 ## Deployment procedure
 
 1. Validate all JSON payloads. List existing policies, following `next_page_token` pagination, and fetch their full contents before changing anything. Save a local backup of affected policies without credentials.
-2. Resolve the actual ID of the existing selected team (`AIG_TEAM`, default `aig-demo-team`) in the target organization through `GET /orgs/{org_name}/groups` (the Docker Hub teams API), following pagination. Use the returned `uuid`, not the numeric `id`, for governance scope. Confirm the team belongs to this organization. Set the team policy name to `<selected-team> Network Restrictions`. Substitute that UUID for `AIG_DEMO_TEAM_ID` in the submitted payload, leaving the packaged source unchanged. Never submit the placeholder, use the team name as its ID, or silently fall back to organization scope. If the team is missing, report that blocker.
+2. Resolve the actual ID of the existing selected team (`AIG_TEAM`, default `aig-demo-team`) in the target organization through `GET /orgs/{org_name}/groups` (the Docker Hub teams API), following pagination. Use the returned `uuid`, not the numeric `id`, for governance scope. Confirm the team belongs to this organization. Set the team policy name to `<selected-team> Network Restrictions`. Substitute that UUID for `AIG_DEMO_TEAM_ID` in the submitted payload, leaving the packaged source unchanged. Never submit the placeholder, use the team name as its ID, or silently fall back to organization scope. If the team is missing, report that blocker. If the groups request returns 403 (for example, the token lacks Group Read), report the exact method, URL, and status, ask the user for the team UUID or an organization access token with the Group Read scope, and stop; do not guess the UUID or fall back to organization scope.
 3. Apply these four policies, preserving their scopes:
 
    | Policy payload | Rule payload | Scope |

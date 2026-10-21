@@ -24,24 +24,29 @@ Run the remaining commands from this directory.
 
 ## 2. Store governance credentials
 
-The governance API requires a JWT, and the token endpoint takes the PAT in a JSON
-body, which sandbox proxy substitution cannot fill in. So the exchange runs on your
-host: [`scripts/aig-jwt.sh`](scripts/aig-jwt.sh) trades your Docker Hub PAT for a
-short-lived JWT and registers the JWT as a custom secret. The PAT never enters the
-sandbox, and the agent only sees a placeholder in `AIG_DOCKER_JWT`, which the proxy
-swaps for the real JWT in the `Authorization: Bearer` header on `hub.docker.com`.
+The governance API requires a JWT, and the token endpoint takes the access token in a
+JSON body, which sandbox proxy substitution cannot fill in. So the exchange runs on your
+host: [`scripts/aig-jwt.sh`](scripts/aig-jwt.sh) trades your organization access token
+for a short-lived JWT (about 10 minutes) and registers the JWT as a custom secret. The
+OAT never enters the sandbox, and the agent only sees a placeholder in `AIG_DOCKER_JWT`,
+which the proxy swaps for the real JWT in the `Authorization: Bearer` header on
+`hub.docker.com`.
 
-Export your PAT in the shell you run the script from (`curl` and `jq` are required
-on the host):
+Create an [organization access token](https://docs.docker.com/security/access-tokens/reference/)
+(OAT) with the Group Read (`scope-group-read`) and Governance Policy Write
+(`scope-governance-policy-write`) scopes. Use an OAT, not a personal access token: the
+team lookup, `GET /v2/orgs/{org}/groups`, rejects a JWT issued from a personal access
+token. Export it in the shell you run the script from (`curl` and `jq` are required on
+the host):
 
 ```bash
-export DOCKER_PAT="your_actual_token_here"
+export DOCKER_OAT="dckr_oat_..."
 ```
 
 Then, from a checkout of this repository, register the JWT for the sandbox used below:
 
 ```bash
-./scripts/aig-jwt.sh --set YOUR_DOCKER_USERNAME aig-policies
+./scripts/aig-jwt.sh --set YOUR_DOCKER_ORG aig-policies
 ```
 
 The script runs `sbx secret set-custom --sandbox aig-policies --host hub.docker.com
@@ -54,9 +59,9 @@ command. `sbx secret set-custom` fails if the variable already exists and there 
 update command, so the script first removes the old secret, then recreates it with the
 same placeholder. A running sandbox picks up the new JWT without changes.
 
-Alternatively, let `sbx` refresh it automatically. `aig-jwt.sh YOUR_DOCKER_USERNAME`
+Alternatively, let `sbx` refresh it automatically. `aig-jwt.sh YOUR_DOCKER_ORG`
 without `--set` prints only the JWT, so it can serve as the secret's command. The
-command runs under `sbx`, so `DOCKER_PAT` must be in the environment of the process
+command runs under `sbx`, so `DOCKER_OAT` must be in the environment of the process
 that starts it. Run it only once per sandbox: if `AIG_DOCKER_JWT` already exists in
 that scope, remove it first with
 `sbx secret rm --sandbox aig-policies --placeholder PLACEHOLDER`.
@@ -64,7 +69,7 @@ that scope, remove it first with
 ```bash
 sbx secret set-custom --sandbox aig-policies --host hub.docker.com \
   --env AIG_DOCKER_JWT --refresh 5m \
-  --command "$PWD/scripts/aig-jwt.sh YOUR_DOCKER_USERNAME"
+  --command "$PWD/scripts/aig-jwt.sh YOUR_DOCKER_ORG"
 ```
 
 See [custom secrets](https://docs.docker.com/ai/sandboxes/configuration/credentials/#custom-secrets).
