@@ -53,7 +53,7 @@ in doubt.
 
 1. Validate all JSON payloads. List existing policies, following `next_page_token` pagination, and fetch their full contents before changing anything. Save a local backup of affected policies without credentials.
 2. Resolve the actual ID of the existing selected team (`AIG_TEAM`, default `aig-demo-team`) in the target organization through `GET /orgs/{org_name}/groups` (the Docker Hub teams API), following pagination. Use the returned `uuid`, not the numeric `id`, for governance scope. Confirm the team belongs to this organization. Set the team policy name to `<selected-team> Network Restrictions`. Substitute that UUID for `AIG_DEMO_TEAM_ID` in the submitted payload, leaving the packaged source unchanged. Never submit the placeholder, use the team name as its ID, or silently fall back to organization scope. If the team is missing, report that blocker. If the groups request returns 403 (for example, the token lacks Group Read), report the exact method, URL, and status, ask the user for the team UUID or an organization access token with the Group Read scope, and stop; do not guess the UUID or fall back to organization scope.
-3. Apply these four policies, preserving their scopes:
+3. Apply these seven policies, preserving their scopes:
 
    | Policy payload | Rule payload | Scope |
    | --- | --- | --- |
@@ -61,11 +61,14 @@ in doubt.
    | `policies/org-filesystem-policy.json` | `policies/org-filesystem-rules.json` (4 rules) | Organization |
    | `policies/aig-demo-team-network-policy.json` | `policies/aig-demo-team-network-rules.json` (4 rules) | Selected team only (default `aig-demo-team`) |
    | `policies/notion-policy.json` | Cedar text embedded in payload | Organization |
+   | `policies/github-policy.json` | Cedar text embedded in payload | Organization |
+   | `policies/crowdstrike-policy.json` | Cedar text embedded in payload | Organization |
+   | `policies/jira-policy.json` | Cedar text embedded in payload | Organization |
 
    Empty `scope.teams` means organization scope. Scope belongs to the policy, not an individual rule.
 
 4. Reuse an unambiguously matching existing policy rather than creating duplicates. Compare its scope and full rule contents. Use the documented PATCH endpoints for updates. Preserve unrelated policies and rules; resolve ambiguous matches before editing.
-5. For a new policy, POST its creation payload to `/orgs/{org_name}/governance/policies`. For each non-Cedar policy, use the returned policy ID and POST each rule object separately to `/orgs/{org_name}/governance/policies/{policy_id}/rules`. The Notion policy already contains its Cedar statements and requires no rule POSTs. Keep network and filesystem rules in separate policies.
+5. For a new policy, POST its creation payload to `/orgs/{org_name}/governance/policies`. For each non-Cedar policy, use the returned policy ID and POST each rule object separately to `/orgs/{org_name}/governance/policies/{policy_id}/rules`. The Notion, GitHub, CrowdStrike and Jira policies already contain their Cedar statements and require no rule POSTs. Keep network and filesystem rules in separate policies.
 6. When migrating a previous deployment of this kit, install and verify the team-scoped restrictions before removing their equivalent organization-scoped copies. Do not leave those four restrictions enforced organization-wide. Remove only copies confirmed to belong to the superseded kit deployment; do not delete unrelated policies.
 7. Check every response. Record successful policy and rule IDs as work proceeds. If a request fails, inspect current server state before retrying a POST to avoid duplicates. Report partial deployment accurately; never claim that failed operations succeeded.
 

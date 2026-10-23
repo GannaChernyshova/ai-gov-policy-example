@@ -72,9 +72,12 @@ Apply the included AI Governance policies to the organization in AIG_ORG and the
 | Filesystem | 4 | Organization |
 | Network restrictions | 4 | Selected team only |
 | Notion (Cedar) | embedded | Organization |
+| GitHub (Cedar) | embedded | Organization |
+| CrowdStrike Falcon (Cedar) | embedded | Organization |
+| Jira (Cedar) | embedded | Organization |
 
 The agent backs up existing policies, reuses matching ones instead of duplicating them,
-applies the four policies, and verifies scopes, rule contents and counts against the
+applies the seven policies, and verifies scopes, rule contents and counts against the
 payloads. It reports the policy IDs and any failures.
 
 Policy changes take up to five minutes to reach developer machines. Filesystem policies

@@ -1,0 +1,10 @@
+{
+  "name": "Jira - allow Atlassian Rovo, deny delete tools",
+  "cedar_v1": {
+    "schema_url": "https://schemas.docker.com/policy/cedar/v1/mcp/v0",
+    "text": "permit (principal, action == MCP::Action::\"register\", resource)\nwhen { resource in MCP::Server::\"jira\" };\n\npermit (principal, action == MCP::Action::\"invokeTool\", resource)\nwhen { resource in MCP::Server::\"jira\" };\n\npermit (principal, action == MCP::Action::\"invokePrimordial\", resource);\n\nforbid (principal, action == MCP::Action::\"invokeTool\", resource)\nwhen {\n  resource in MCP::Server::\"jira\" &&\n  (resource.name like \"delete*\" || resource.name like \"*Delete*\")\n};\n"
+  },
+  "scope": {
+    "teams": []
+  }
+}
