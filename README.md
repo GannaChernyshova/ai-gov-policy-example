@@ -9,8 +9,7 @@ instructions in `AGENTS.md` to apply them to a Docker organization through the
 - Docker Sandboxes (`sbx` v0.45 or later), signed in. The example uses the Codex
   agent; complete its sign-in separately.
 - `curl` and `jq` on the host.
-- An existing Docker Hub team to scope the team restrictions to (default
-  `aig-demo-team`).
+- An existing Docker Hub team to scope the team restrictions to. Create one before you run the agent: [how to create a Team](https://docs.docker.com/accounts/organization/manage/manage-a-team/) 
 - An organization access token (OAT) with the scopes `scope-group-read` and
   `scope-governance-policy-write`. Use an OAT, not a personal access token:
   `GET /v2/orgs/{org}/groups` rejects JWTs issued from a PAT. See
