@@ -2,7 +2,7 @@
   "name": "Notion - deny create tools",
   "cedar_v1": {
     "schema_url": "https://schemas.docker.com/policy/cedar/v1/mcp/v0",
-    "text": "// Allow Notion tool calls, but forbid notion-create-* tools.\n// A matching forbid overrides permit.\n\npermit (principal, action == MCP::Action::\"invokeTool\", resource)\nwhen { resource in MCP::Server::\"notion\" };\n\nforbid (principal, action == MCP::Action::\"invokeTool\", resource)\nwhen {\n  resource in MCP::Server::\"notion\" &&\n  resource.name like \"notion-create-*\"\n};\n"
+    "text": "// Allow Notion tool calls, but forbid notion-create-* tools.\n// A matching forbid overrides permit.\n\npermit (principal, action == MCP::Action::\"register\", resource)\nwhen {\n  resource in MCP::Server::\"notion\" &&\n  resource.identityURL == \"https://mcp.notion.com/mcp\"\n};\n\nforbid (principal, action == MCP::Action::\"invokeTool\", resource)\nwhen {\n  resource in MCP::Server::\"notion\" &&\n  resource.name like \"notion-create-*\"\n};\n"
   },
   "scope": {
     "teams": []
