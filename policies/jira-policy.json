@@ -1,8 +1,8 @@
 {
-  "name": "Jira - allow Atlassian Rovo, deny delete tools",
+  "name": "Jira - allow Atlassian Rovo, deny create tools",
   "cedar_v1": {
     "schema_url": "https://schemas.docker.com/policy/cedar/v1/mcp/v0",
-    "text": "permit (principal, action == MCP::Action::\"register\", resource)\nwhen { resource in MCP::Server::\"jira\" };\n\npermit (principal, action == MCP::Action::\"invokeTool\", resource)\nwhen { resource in MCP::Server::\"jira\" };\n\npermit (principal, action == MCP::Action::\"invokePrimordial\", resource);\n\nforbid (principal, action == MCP::Action::\"invokeTool\", resource)\nwhen {\n  resource in MCP::Server::\"jira\" &&\n  (resource.name like \"delete*\" || resource.name like \"*Delete*\")\n};\n"
+    "text": "// Allow Jira tool calls, but forbid any tool whose name contains \"create\".\n// A matching forbid overrides permit.\n\npermit (principal, action == MCP::Action::\"register\", resource)\nwhen {\n  resource in MCP::Server::\"jira\"\n};\n\npermit (principal, action == MCP::Action::\"invokeTool\", resource)\nwhen {\n  resource in MCP::Server::\"jira\"\n};\n\npermit (principal, action == MCP::Action::\"invokePrimordial\", resource)\nwhen {\n  resource in MCP::Server::\"jira\"\n};\n\nforbid (principal, action == MCP::Action::\"invokeTool\", resource)\nwhen {\n  resource in MCP::Server::\"jira\" &&\n  resource has name &&\n  (\n    resource.name like \"*create*\" ||\n    resource.name like \"*Create*\"\n  )\n};\n"
   },
   "scope": {
     "teams": []
